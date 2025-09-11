@@ -5,9 +5,11 @@ date: "2025-09-11"
 output: html_document
 ---
 
+## Introduction
+This is a notebook that demonstrates the setup and of R and Rstudio, installing packages and using basic functions to look at the data set Carseats. 
+
 ```{r}
-# Install and load packages
-install.packages("ISLR")
+#load packages
 
 library("ISLR")
 
@@ -19,8 +21,9 @@ summary(Carseats)
 # View amount of rows in dataset
 nrow(Carseats)
 
+
 # Shows the max value of advertising
-Max(Carseats$Advertising)
+max(Carseats$Advertising)
 
 
 # IQR of price
@@ -38,5 +41,13 @@ plot(Carseats$Price, Carseats$Sales,
 
 #correlation between the two attributes
 
-cor(Carseats$Price, Carseats$Sales)
+cor(Carseats$Sales, Carseats$Price)
+
+
+# 2. The number of rows observed in this data set is 400
+# 3. The Maximum value in the advertising attribute is 29
+# 4. The IQR of the Price attribute is 31
+# 5. The sign of the correlation being negative means as the prices get higher, sales will get lower or as prices get lower sales will increase.
 ```
+
+
