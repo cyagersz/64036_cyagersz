@@ -1,0 +1,42 @@
+---
+title: "Assignement_1"
+author: "Cole Yagersz"
+date: "2025-09-11"
+output: html_document
+---
+
+```{r}
+# Install and load packages
+install.packages("ISLR")
+
+library("ISLR")
+
+
+# View summary of carseats
+summary(Carseats)
+
+
+# View amount of rows in dataset
+nrow(Carseats)
+
+# Shows the max value of advertising
+Max(Carseats$Advertising)
+
+
+# IQR of price
+
+IQR(Carseats$Price)
+
+
+# plot of sales vs price
+
+plot(Carseats$Price, Carseats$Sales,
+     main = "Sales vs Price",
+     xlab = "Price",
+     ylab = "Sales",
+     col = "Blue", pch = 19)
+
+#correlation between the two attributes
+
+cor(Carseats$Price, Carseats$Sales)
+```
