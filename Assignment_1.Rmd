@@ -9,30 +9,33 @@ output: html_document
 This is a notebook that demonstrates the setup and of R and Rstudio, installing packages and using basic functions to look at the data set Carseats. 
 
 ```{r}
-#load packages
+#Install ISLR packages
+
+installed.packages("ISLR")
 
 
+# This loads the ISLR library 
 library("ISLR")
 
 
-# View summary of carseats
+# This views the summary of carseats data set
 summary(Carseats)
 
 
-# View amount of rows in dataset
+# This views amount of rows in carseats data set
 nrow(Carseats)
 
 
-# Shows the max value of advertising
+# This shows the max value of advertising
 max(Carseats$Advertising)
 
 
-# IQR of price
+# This shows the IQR of price
 
 IQR(Carseats$Price)
 
 
-# plot of sales vs price
+# This plots the data set attributes of sales vs price
 
 plot(Carseats$Price, Carseats$Sales,
      main = "Sales vs Price",
@@ -40,15 +43,15 @@ plot(Carseats$Price, Carseats$Sales,
      ylab = "Sales",
      col = "Blue", pch = 19)
 
-#correlation between the two attributes
+# This shows the correlation between the two attributes
 
 cor(Carseats$Sales, Carseats$Price)
 
 
 # 2. The number of rows observed in this data set is 400
 # 3. The Maximum value in the advertising attribute is 29
-# 4. The IQR of the Price attribute is 31
-# 5. In the graph I see as the price is lower sales are way up and as price gets higher the sales go down. The sign of the correlation being negative means as the prices get higher, sales will get lower or as prices get lower sales will increase.Also as seen in the graph you can see as price goes up the sales go down and as price goes down sales go up.
+# 4. The IQR of the Price attribute is 31. Also can be found doing Q3 - Q1, which is 131-100 = 31
+# 5. In the graph I see as the price is lower sales are way up and as price gets higher the sales go down. The sign of the correlation being negative means as the prices get higher, sales will get lower or as prices get lower sales will increase.
 ```
 
 
