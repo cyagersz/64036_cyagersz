@@ -5,7 +5,42 @@ output: html_document
 ---
 
 ```{r}
+#Used to install packages if not done so already
+install.packages("caret")
+install.packages("dplyr")
 
+```
+```{r}
+#Load the libraries being used
+library("caret")
+library("dplyr")
+
+#Read in csv file to data frame
+retail <- read.csv("Online_Retail.csv")
+
+#Preview data
+head(retail)
+```
+Question 1:Show the breakdown of the number of transactions by countries i.e., how many transactions are in the dataset for each country (consider all records including cancelled transactions). Show this in total number and also in percentage. Show only countries accounting for more than 1% of the total transactions.
+```{r}
+# Count transactions per country
+country_count <- retail %>% group_by(Country) %>% summarise(TransactionCount = n()) %>% mutate(Percentage = 100 * TransactionCount/ sum(TransactionCount)) %>% filter(Percentage >1)
+
+#View the results
+print(country_count)
+```
+
+Question 2: Create a new variable ‘TransactionValue’ that is the product of the existing ‘Quantity’ and ‘UnitPrice’ variables. Add this variable to the dataframe. 
+
+```{r}
+retail <- retail %>% mutate(TransactionValue = Quantity * UnitPrice)
+
+summary(retail)
+```
+
+Question 3: Using the newly created variable, TransactionValue, show the breakdown of transaction values by countries i.e. how much money in total has been spent each country. Show this in total sum of transaction values. Show only countries with total transaction exceeding 130,000 British Pound.
+
+```{r}
 
 
 ```
