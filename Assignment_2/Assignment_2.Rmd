@@ -5,12 +5,6 @@ output: html_document
 ---
 
 ```{r}
-#Used to install packages if not done so already
-install.packages("caret")
-install.packages("dplyr")
-
-```
-```{r}
 #Load the libraries being used
 library("caret")
 library("dplyr")
@@ -41,6 +35,183 @@ summary(retail)
 Question 3: Using the newly created variable, TransactionValue, show the breakdown of transaction values by countries i.e. how much money in total has been spent each country. Show this in total sum of transaction values. Show only countries with total transaction exceeding 130,000 British Pound.
 
 ```{r}
+# Group by country and sum TransactionValue
+country_transaction <- retail %>% group_by(Country) %>% summarise(TotalValue = sum(TransactionValue, na.rm = TRUE)) %>%  filter(TotalValue > 130000) %>% arrange(desc(TotalValue))
 
+# Show countries transactions greater than $130000
+print(country_transaction)
+
+```
+Question 4
+```{r}
+# Change into POSIXIt
+Temp=strptime(retail$InvoiceDate,format='%m/%d/%Y %H:%M',tz='GMT')
+
+head(Temp)
+
+# separate date, day of the week and hour components 
+retail$New_Invoice_Date <- as.Date(Temp)
+
+retail$New_Invoice_Date[20000]- retail$New_Invoice_Date[10]
+
+retail$Invoice_Day_Week= weekdays(retail$New_Invoice_Date)
+
+retail$New_Invoice_Hour = as.numeric(format(Temp, "%H"))
+
+retail$New_Invoice_Month = as.numeric(format(Temp, "%m"))
+
+# Show the percentage of transactions (by numbers) by days of the week
+retail %>% group_by(Invoice_Day_Week) %>% 
+summarise(TransactionCount = n()) %>%
+mutate(Percentage = 100 * TransactionCount / sum(TransactionCount)) %>%
+arrange(desc(Percentage))
+
+# Show the percentage of transactions (by transaction volume) by days of the week 
+retail %>% group_by(Invoice_Day_Week) %>% summarise(TotalValue = sum(TransactionValue, na.rm = TRUE))%>%
+summarise(TransactionCount = n()) %>%
+mutate(Percentage = 100 * TransactionCount / sum(TransactionCount)) %>%
+arrange(desc(Percentage))
+
+# Show the percentage of transactions (by transaction volume) by month of the year 
+retail %>% group_by(New_Invoice_Month) %>% 
+summarise(TotalValue = sum(TransactionValue, na.rm = TRUE)) %>%
+mutate(Percentage = 100 * TotalValue / sum(TotalValue)) %>%
+arrange(New_Invoice_Month)
+
+# The date with the highest number of transactions from Australia? 
+retail %>%
+filter(Country == "Australia") %>%
+group_by(New_Invoice_Date) %>%
+summarise(NumTransactions = n()) %>%
+arrange(desc(NumTransactions)) %>%
+slice(1)
+
+
+#  Minimum for the customers? The responsible IT team is available from 7:00 to 20:00 every day.
+hourly_counts <- retail %>%
+filter(New_Invoice_Hour >= 7 & New_Invoice_Hour <= 20) %>%
+group_by(New_Invoice_Hour) %>%
+summarise(TransactionCount = n()) %>%
+arrange(New_Invoice_Hour)
+
+
+# Extract vectors from hourly_counts
+hours <- hourly_counts$New_Invoice_Hour
+counts <- hourly_counts$TransactionCount
+
+# Create a vector of rolling 2-hour sums
+rolling_2hr <- counts[1:(length(counts)-1)] + counts[2:length(counts)]
+
+# Create a data frame to see the 2-hour windows and their total transactions
+two_hour_windows <- data.frame(
+Start_Hour = hours[1:(length(hours)-1)],
+End_Hour = hours[2:length(hours)],
+Total_Transactions = rolling_2hr)
+
+# View the lowest traffic window
+two_hour_windows %>%
+arrange(Total_Transactions) %>%
+slice(1)
+```
+Question 5: Plot the histogram of transaction values from Germany. Use the hist() function to plot. 
+```{r}
+# Filter data for Germany only
+germany_data <- retail %>%
+filter(Country == "Germany", !is.na(TransactionValue), TransactionValue > 0)
+
+# Plot histogram of TransactionValue
+hist(germany_data$TransactionValue,
+     main = "Histogram of Transaction Values (Germany)",
+     xlab = "Transaction Value",
+     col = "skyblue",
+     border = "white",
+     breaks = 50,
+     xlim = c(0, 300))   
+
+```
+Question 6: Which customer had the highest number of transactions? Which customer is most valuable
+```{r}
+customer_data <- retail %>%
+  filter(!is.na(CustomerID))
+
+# Highest number of transactions (count of unique invoices)
+most_transactions <- customer_data %>%
+group_by(CustomerID) %>%
+summarise(NumTransactions = n_distinct(InvoiceNo)) %>%
+arrange(desc(NumTransactions)) %>%
+slice(1)
+
+print(most_transactions)
+
+# Most valuable customer
+most_valuable <- customer_data %>%
+group_by(CustomerID) %>%
+summarise(TotalSpent = sum(TransactionValue, na.rm = TRUE)) %>%
+arrange(desc(TotalSpent)) %>%
+slice(1)
+
+print(most_valuable)
+```
+Question 7: Calculate the percentage of missing values for each variable in the dataset
+```{r}
+missing_percentages <- colMeans(is.na(retail)) * 100
+print(missing_percentages)
+
+```
+Question 8: What are the number of transactions with missing CustomerID records by countries?
+```{r}
+retail %>%
+filter(is.na(CustomerID)) %>%
+group_by(Country) %>%
+summarise(MissingTransactions = n()) %>%
+arrange(desc(MissingTransactions))
+
+```
+Question 9: On average, how often the costumers comeback to the website for their next shopping
+```{r}
+retail$InvoiceDate <- as.POSIXct(retail$InvoiceDate, format = "%m/%d/%Y %H:%M")
+
+# Filter out rows with missing CustomerID
+return_data <- retail %>%
+filter(!is.na(CustomerID)) %>%
+arrange(CustomerID, InvoiceDate) %>%  # Sort by customer and date
+group_by(CustomerID) %>%
+mutate(DaysBetween = as.numeric(difftime(InvoiceDate, lag(InvoiceDate), units = "days")))  
+
+# Remove NA values from first purchase per customer
+average_days_between <- return_data %>%
+filter(!is.na(DaysBetween)) %>%
+summarise(AverageDays = mean(DaysBetween))
+
+print(average_days_between)
+```
+Question 10: In the retail sector, it is very important to understand the return rate of the goods purchased by customers. In this example, we can define this quantity, simply, as the ratio of the number of transactions cancelled (regardless of the transaction value) over the total number of transactions.Page 4 With this definition, what is the return rate for the French customers?
+```{r}
+
+return_rate_france <- retail %>%
+filter(Country == "France") %>%
+summarise(Total = n(),
+Cancelled = sum(Quantity < 0),
+ReturnRate = Cancelled / Total * 100)
+
+print(return_rate_france)
+```
+Question 11: What is the product that has generated the highest revenue for the retailer?
+```{r}
+top_product <- retail %>%
+filter(TransactionValue > 0) %>%  
+group_by(Description) %>%
+summarise(TotalRevenue = sum(TransactionValue, na.rm = TRUE)) %>%
+arrange(desc(TotalRevenue)) %>%
+slice(1)
+
+print(top_product)
+```
+Question 12: How many unique customers are represented in the dataset? 
+```{r}
+# Count number of unique customers (excluding missing values)
+num_unique_customers <- length(unique(retail$CustomerID[!is.na(retail$CustomerID)]))
+
+print(num_unique_customers)
 
 ```
