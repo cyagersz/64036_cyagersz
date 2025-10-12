@@ -18,7 +18,11 @@ head(retail)
 Question 1:Show the breakdown of the number of transactions by countries i.e., how many transactions are in the dataset for each country (consider all records including cancelled transactions). Show this in total number and also in percentage. Show only countries accounting for more than 1% of the total transactions.
 ```{r}
 # Count transactions per country
-country_count <- retail %>% group_by(Country) %>% summarise(TransactionCount = n()) %>% mutate(Percentage = 100 * TransactionCount/ sum(TransactionCount)) %>% filter(Percentage >1)
+country_count <- retail %>% 
+group_by(Country) %>% 
+summarise(TransactionCount = n()) %>% 
+mutate(Percentage = 100 * TransactionCount/ sum(TransactionCount)) %>% 
+filter(Percentage >1)
 
 #View the results
 print(country_count)
@@ -27,7 +31,8 @@ print(country_count)
 Question 2: Create a new variable ‘TransactionValue’ that is the product of the existing ‘Quantity’ and ‘UnitPrice’ variables. Add this variable to the dataframe. 
 
 ```{r}
-retail <- retail %>% mutate(TransactionValue = Quantity * UnitPrice)
+retail <- retail %>% 
+mutate(TransactionValue = Quantity * UnitPrice)
 
 summary(retail)
 ```
@@ -36,7 +41,11 @@ Question 3: Using the newly created variable, TransactionValue, show the breakdo
 
 ```{r}
 # Group by country and sum TransactionValue
-country_transaction <- retail %>% group_by(Country) %>% summarise(TotalValue = sum(TransactionValue, na.rm = TRUE)) %>%  filter(TotalValue > 130000) %>% arrange(desc(TotalValue))
+country_transaction <- retail %>% 
+group_by(Country) %>% 
+summarise(TotalValue = sum(TransactionValue, na.rm = TRUE)) %>%  
+filter(TotalValue > 130000) %>% 
+arrange(desc(TotalValue))
 
 # Show countries transactions greater than $130000
 print(country_transaction)
@@ -61,19 +70,23 @@ retail$New_Invoice_Hour = as.numeric(format(Temp, "%H"))
 retail$New_Invoice_Month = as.numeric(format(Temp, "%m"))
 
 # Show the percentage of transactions (by numbers) by days of the week
-retail %>% group_by(Invoice_Day_Week) %>% 
+retail %>% 
+group_by(Invoice_Day_Week) %>% 
 summarise(TransactionCount = n()) %>%
 mutate(Percentage = 100 * TransactionCount / sum(TransactionCount)) %>%
 arrange(desc(Percentage))
 
 # Show the percentage of transactions (by transaction volume) by days of the week 
-retail %>% group_by(Invoice_Day_Week) %>% summarise(TotalValue = sum(TransactionValue, na.rm = TRUE))%>%
-summarise(TransactionCount = n()) %>%
-mutate(Percentage = 100 * TransactionCount / sum(TransactionCount)) %>%
+retail %>%
+group_by(Invoice_Day_Week) %>%
+summarise(TotalValue = sum(TransactionValue, na.rm = TRUE)) %>%
+mutate(Percentage = 100 * TotalValue / sum(TotalValue)) %>%
 arrange(desc(Percentage))
 
+
 # Show the percentage of transactions (by transaction volume) by month of the year 
-retail %>% group_by(New_Invoice_Month) %>% 
+retail %>% 
+group_by(New_Invoice_Month) %>% 
 summarise(TotalValue = sum(TransactionValue, na.rm = TRUE)) %>%
 mutate(Percentage = 100 * TotalValue / sum(TotalValue)) %>%
 arrange(New_Invoice_Month)
@@ -129,12 +142,14 @@ hist(germany_data$TransactionValue,
      xlim = c(0, 300))   
 
 ```
+
+
 Question 6: Which customer had the highest number of transactions? Which customer is most valuable
 ```{r}
 customer_data <- retail %>%
   filter(!is.na(CustomerID))
 
-# Highest number of transactions (count of unique invoices)
+# Highest number of transactions
 most_transactions <- customer_data %>%
 group_by(CustomerID) %>%
 summarise(NumTransactions = n_distinct(InvoiceNo)) %>%
@@ -209,7 +224,7 @@ print(top_product)
 ```
 Question 12: How many unique customers are represented in the dataset? 
 ```{r}
-# Count number of unique customers (excluding missing values)
+# Count number of unique customers
 num_unique_customers <- length(unique(retail$CustomerID[!is.na(retail$CustomerID)]))
 
 print(num_unique_customers)
