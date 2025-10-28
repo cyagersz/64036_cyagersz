@@ -393,7 +393,11 @@ country (consider all records including cancelled transactions). Show
 this in total number and also in percentage. Show only countries
 accounting for more than 1% of the total transactions.</p>
 <pre class="r"><code># Count transactions per country
-country_count &lt;- retail %&gt;% group_by(Country) %&gt;% summarise(TransactionCount = n()) %&gt;% mutate(Percentage = 100 * TransactionCount/ sum(TransactionCount)) %&gt;% filter(Percentage &gt;1)
+country_count &lt;- retail %&gt;% 
+group_by(Country) %&gt;% 
+summarise(TransactionCount = n()) %&gt;% 
+mutate(Percentage = 100 * TransactionCount/ sum(TransactionCount)) %&gt;% 
+filter(Percentage &gt;1)
 
 #View the results
 print(country_count)</code></pre>
@@ -407,7 +411,8 @@ print(country_count)</code></pre>
 <p>Question 2: Create a new variable ‘TransactionValue’ that is the
 product of the existing ‘Quantity’ and ‘UnitPrice’ variables. Add this
 variable to the dataframe.</p>
-<pre class="r"><code>retail &lt;- retail %&gt;% mutate(TransactionValue = Quantity * UnitPrice)
+<pre class="r"><code>retail &lt;- retail %&gt;% 
+mutate(TransactionValue = Quantity * UnitPrice)
 
 summary(retail)</code></pre>
 <pre><code>##   InvoiceNo          StockCode         Description           Quantity         
@@ -440,7 +445,11 @@ total has been spent each country. Show this in total sum of transaction
 values. Show only countries with total transaction exceeding 130,000
 British Pound.</p>
 <pre class="r"><code># Group by country and sum TransactionValue
-country_transaction &lt;- retail %&gt;% group_by(Country) %&gt;% summarise(TotalValue = sum(TransactionValue, na.rm = TRUE)) %&gt;%  filter(TotalValue &gt; 130000) %&gt;% arrange(desc(TotalValue))
+country_transaction &lt;- retail %&gt;% 
+group_by(Country) %&gt;% 
+summarise(TotalValue = sum(TransactionValue, na.rm = TRUE)) %&gt;%  
+filter(TotalValue &gt; 130000) %&gt;% 
+arrange(desc(TotalValue))
 
 # Show countries transactions greater than $130000
 print(country_transaction)</code></pre>
@@ -473,7 +482,8 @@ retail$New_Invoice_Hour = as.numeric(format(Temp, &quot;%H&quot;))
 retail$New_Invoice_Month = as.numeric(format(Temp, &quot;%m&quot;))
 
 # Show the percentage of transactions (by numbers) by days of the week
-retail %&gt;% group_by(Invoice_Day_Week) %&gt;% 
+retail %&gt;% 
+group_by(Invoice_Day_Week) %&gt;% 
 summarise(TransactionCount = n()) %&gt;%
 mutate(Percentage = 100 * TransactionCount / sum(TransactionCount)) %&gt;%
 arrange(desc(Percentage))</code></pre>
@@ -502,7 +512,8 @@ arrange(desc(Percentage))</code></pre>
 ## 5 Friday             1540611.      15.8 
 ## 6 Sunday              805679.       8.27</code></pre>
 <pre class="r"><code># Show the percentage of transactions (by transaction volume) by month of the year 
-retail %&gt;% group_by(New_Invoice_Month) %&gt;% 
+retail %&gt;% 
+group_by(New_Invoice_Month) %&gt;% 
 summarise(TotalValue = sum(TransactionValue, na.rm = TRUE)) %&gt;%
 mutate(Percentage = 100 * TotalValue / sum(TotalValue)) %&gt;%
 arrange(New_Invoice_Month)</code></pre>
@@ -579,7 +590,7 @@ Which customer is most valuable</p>
 <pre class="r"><code>customer_data &lt;- retail %&gt;%
   filter(!is.na(CustomerID))
 
-# Highest number of transactions (count of unique invoices)
+# Highest number of transactions
 most_transactions &lt;- customer_data %&gt;%
 group_by(CustomerID) %&gt;%
 summarise(NumTransactions = n_distinct(InvoiceNo)) %&gt;%
@@ -696,7 +707,7 @@ print(top_product)</code></pre>
 ## 1 DOTCOM POSTAGE      206249.</code></pre>
 <p>Question 12: How many unique customers are represented in the
 dataset?</p>
-<pre class="r"><code># Count number of unique customers (excluding missing values)
+<pre class="r"><code># Count number of unique customers
 num_unique_customers &lt;- length(unique(retail$CustomerID[!is.na(retail$CustomerID)]))
 
 print(num_unique_customers)</code></pre>
