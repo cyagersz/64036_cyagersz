@@ -1,5 +1,42 @@
 ---
 title: "Assignment_3"
+author: "Cole Yagersz"
 output: html_document
 ---
 
+## Intorduction 
+
+Please answer all questions from 1 to 3. You should use R to solve the questions and include the screenshots in your submission. The Golden questions are optional and carries additional marks. This means that you will not lose marks if you do not answer that question. Your solution should include the calculation steps and your conclusion that is clearly expressed.
+
+
+## Question 1 
+
+Run the following code in R-studio to create two variables X and Y. 
+
+set.seed(2017)
+
+X=runif(100)*10
+
+Y=X*4+3.45
+
+Y=rnorm(100)*0.29*Y+Y
+
+```{r}
+set.seed(2017)
+X=runif(100)*10
+Y=X*4+3.45
+Y=rnorm(100)*0.29*Y+Y
+
+# Question 1.a
+plot(X,Y,main = "Scatterplot of Y vs X",
+     xlab = "X", ylab = "Y", pch = 19, col = "blue")
+
+# Question 1.b
+model1 <- lm(Y ~ X)
+summary(model1)
+
+# Question 1.c
+
+print(cor(X, Y)^2)
+
+```
