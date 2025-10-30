@@ -26,17 +26,95 @@ set.seed(2017)
 X=runif(100)*10
 Y=X*4+3.45
 Y=rnorm(100)*0.29*Y+Y
+```
 
+
+```{r}
 # Question 1.a
-plot(X,Y,main = "Scatterplot of Y vs X",
-     xlab = "X", ylab = "Y", pch = 19, col = "blue")
+plot(Y ~ X)
 
+```
+I think based off the chart displayed from Y based of X a linear model would be a good choice because as X increase so does Y showing a positive linear relationship between the variables.
+
+
+```{r}
 # Question 1.b
 model1 <- lm(Y ~ X)
 summary(model1)
 
+```
+The accuracy of this model is shown by the Multiple R-Squared value which is .6517 showing that this is 65.71% accurate. This tells us that 65.71% of the variation caused on Y is by X.
+
+
+```{r}
 # Question 1.c
 
-print(cor(X, Y)^2)
+cat("The correlation coefficient is", cor(X, Y)^2, "\n")
+cat("The correlation of Determination is", summary(model1)$r.squared)
+
+
+```
+
+The coefficient of Determination is related to the coefficient correlation in this model because we only have one independent and dependent variable so in this model they should equal the same thing which is .6571. So the coefficient of Determination (r^2) is exactly equal to the square of correlation coefficient between Y and X.
+
+
+## Question 2
+
+We will use the ‘mtcars’ dataset for this question. The dataset is already included in your R distribution. The dataset shows some of the characteristics of different cars. The following shows few samples (i.e. the first 6 rows) of the dataset. 
+
+```{r}
+
+head(mtcars)
+
+```
+
+```{r}
+# Question 2.a
+James <- lm(hp ~ wt, data = mtcars)
+Chris <- lm(hp ~ mpg, data = mtcars)
+
+summary(James)
+cat("The correlation of Determination is", summary(James)$r.squared, "\n")
+summary(Chris)
+cat("The correlation of Determination is", summary(Chris)$r.squared, "\n")
+```
+
+Based off the models we have created for James and Chris we got two different correlations. When comparing Horse Power based on Weight (wt) in James model we got a correlation of .4339. So based on that we can say that 43.39% of Horse Power variability is based on weight. In Chris model we compare Horse Power based on Mile Per Gallon (mpg). We got a correlation of .6024. So based on that we can say 60.24% of Horse Power variability is based on Mile Per Gallon. So I would say that Chris is more accurate in saying that the Miles Per Gallon (mpg) is a better estimator in Horse Power (hp).
+
+
+
+```{r}
+# Question 2.b
+model <- lm(hp ~ cyl+mpg, data = mtcars)
+summary(model)
+
+cat("The predicted Horse Power of the car with 4 cylinders and 22 Miles Per Gallon is ",predict(model,data.frame(cyl = c(4), mpg = c(22))))
+
+```
+
+## Question 3
+For this question, we are going to use BostonHousing dataset. The dataset is in ‘mlbench’ package, so we first need to install the package, call the library and the load the dataset using the following commands
+
+```{r}
+library(mlbench)
+data(BostonHousing)
+
+```
+Build a model to estimate the median value of owner-occupied homes (medv)based on the
+following variables: crime crate (crim), proportion of residential land zoned for lots over
+25,000 sq.ft (zn), the local pupil-teacher ratio (ptratio) and weather the whether the tract
+bounds Chas River(chas). Is this an accurate model? (Hint check R 2 ) 
+
+```{r}
+# Question 3.a
+homes_model <- lm(medv ~ crim+zn+ptratio+chas, data = BostonHousing)
+summary(homes_model)
+cat(" The accuracy of this model is",summary(homes_model)$r.squared)
+
+```
+The accuracy of this model is 35.98% which is not as accurate as it should be to be called a reliable model to say that the median value of the homes are based on crime crate (crim), proportion of residential land zoned for lots over25,000 sq.ft (zn), the local pupil-teacher ratio (ptratio) and weather the whether the tract bounds Chas River(chas). So overall I would say that this is not an accurate model.
+
+```{r}
+# Question 3.b
 
 ```
