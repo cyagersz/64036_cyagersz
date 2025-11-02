@@ -4,7 +4,7 @@ author: "Cole Yagersz"
 output: html_document
 ---
 
-## Intorduction 
+## Introduction 
 
 Please answer all questions from 1 to 3. You should use R to solve the questions and include the screenshots in your submission. The Golden questions are optional and carries additional marks. This means that you will not lose marks if you do not answer that question. Your solution should include the calculation steps and your conclusion that is clearly expressed.
 
