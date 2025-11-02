@@ -34,6 +34,7 @@ Y=rnorm(100)*0.29*Y+Y
 plot(Y ~ X)
 
 ```
+
 I think based off the chart displayed from Y based of X a linear model would be a good choice because as X increase so does Y showing a positive linear relationship between the variables.
 
 
